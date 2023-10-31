@@ -247,6 +247,21 @@ namespace TapTap.Themis
             }
             return TapThemisAgent.Get().GetHeartbeat(index,random);
         }
+
+        public static string GetOneidData()
+        {
+            if (!IsInitialized)
+            {
+                return "";
+            }
+            return TapThemisAgent.Get().GetOneidData();
+        }
+
+        public static void SetUseExtendCallback(bool b)
+        {
+            TapThemisAgent.Get().SetUseExtendCallback(b);
+        }
+
         #region Privated Fields and Methods 
         private static event LogCallbackDelegate _LogCallbackEventHandler;
 
@@ -534,6 +549,9 @@ namespace TapTap.Themis
 
             if (!string.IsNullOrEmpty(message))
             {
+                if(message.Contains("[themis ignore]")){
+                    return;
+                }
                 try
                 {
                     if ((LogSeverity.LogException == logLevel) && message.Contains("Exception"))

@@ -56,6 +56,18 @@ namespace TapTap.Themis
             return null;
         }
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate string getExtraMessageCBEx(string message);
+        [MonoPInvokeCallback(typeof(getExtraMessageCBEx))]
+        static string _getExtraMessageCBEx(string message)
+        {
+            if (_callbackImp != null)
+            {
+                return _callbackImp.getExtraMessageEx(message);
+            }
+            return null;
+        }
+
         [DllImport("themis_x64")]
         private static extern IntPtr init_themis_by_appid(string appID, byte[] version);
         [DllImport("themis_x64")]
@@ -84,6 +96,12 @@ namespace TapTap.Themis
         private static extern void report_custom_exception_ex(IntPtr themis, string name, string reason, string stackTrace, bool isQuitApp, string extra_message,int extra_len);
         [DllImport("themis_x64")]
         private static extern void set_exception_callback(IntPtr message_cb);
+        [DllImport("themis_x64")]
+        private static extern IntPtr get_oneid_data(IntPtr themis);
+        [DllImport("themis_x64")]
+        private static extern void set_use_extend_callback(bool b);
+        [DllImport("themis_x64")]
+        private static extern void set_extra_callback_ex(IntPtr cb);
 
         public override void InitTHEMISAgent()
         {
@@ -165,13 +183,16 @@ namespace TapTap.Themis
                 onThemisStateCB state_handler = new onThemisStateCB(_onThemisStateCB);
                 getExtraMessageCB message_handler = new getExtraMessageCB(_getExtraMessageCB);
                 getExceptionMessageCB exception_msg_handler = new getExceptionMessageCB(_getExceptionMessageCB);
+                getExtraMessageCBEx ex_message_handler = new getExtraMessageCBEx(_getExtraMessageCBEx);
 
                 IntPtr state_cb = Marshal.GetFunctionPointerForDelegate(state_handler);
                 IntPtr message_cb = Marshal.GetFunctionPointerForDelegate(message_handler);
                 IntPtr exception_msg_cb = Marshal.GetFunctionPointerForDelegate(exception_msg_handler);
+                IntPtr message_cb_ex = Marshal.GetFunctionPointerForDelegate(ex_message_handler);
 
                 set_native_callback(tapThemis,state_cb, message_cb);
                 set_exception_callback(exception_msg_cb);
+                set_extra_callback_ex(message_cb_ex);
             }
         }
 
@@ -187,6 +208,25 @@ namespace TapTap.Themis
                 return str_hb;
             }
             return "";
+        }
+
+        public override string GetOneidData()
+        {
+            if (tapThemis != IntPtr.Zero){
+                IntPtr hb = get_oneid_data(tapThemis);
+
+                string str_hb = Marshal.PtrToStringAnsi(hb);
+                return str_hb;
+            }
+            return "";
+        }
+
+        public override void SetUseExtendCallback(bool b)
+        {
+            if (tapThemis != IntPtr.Zero)
+            {
+                set_use_extend_callback(b);
+            }
         }
     }
 #endif

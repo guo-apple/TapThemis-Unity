@@ -24,6 +24,8 @@ extern void _add_custom_field(const char * str_key,const char * str_value);
     
 extern const char * _lib_get_themis_heartbeat(int index, long random);
     
+extern const char * _lib_get_oneid_data();
+    
 extern void _lib_event_tracking(const char *logData);
     
 extern void _lib_log_report(const char *logMessage);
@@ -31,7 +33,10 @@ extern void _lib_debug_log(const char *lpLogData);
 extern void _lib_enable_debug_mode(bool isTurnOn);
 extern void _lib_set_exception_callback(long message_cb);
 extern void _lib_set_exception_oom_callback(long message_cb);
-
+extern void _lib_set_strong_kill_callback(long message_cb);
+    
+extern void _lib_set_extra_callback_ex(long message_cb);
+extern void _lib_set_use_extend_callback(bool b);
 
         
     

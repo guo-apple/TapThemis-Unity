@@ -14,7 +14,17 @@ FOUNDATION_EXPORT double THEMISVersionNumber;
 FOUNDATION_EXPORT const unsigned char THEMISVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <THEMIS/PublicHeader.h>
+#ifdef __APPLE__
+#include <TargetConditionals.h>
 
 
+#if TARGET_OS_IPHONE
 #import <THEMIS/UnityHandler.h>
 #import <THEMIS/XDGameSDK.h>
+
+#elif TARGET_OS_MAC
+#import <THEMIS_MAC/UnityHandler.h>
+#import <THEMIS_MAC/XDGameSDK.h>
+#endif
+#endif
+

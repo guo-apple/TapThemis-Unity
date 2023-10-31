@@ -261,6 +261,29 @@ namespace TapTap.Themis
             }
             return "";
         }
+
+        public override string GetOneidData()
+        {
+            try
+            {
+                string hb = THEMIS.CallStatic<string>("GetOneidData");
+                return string.Copy(hb);
+            }
+            catch (Exception e)
+            {
+                TapThemis.LocalDebugLog("ReportException Error " + e.Message);
+            }
+            return "";
+        }
+
+        public override void SetUseExtendCallback(bool b)
+        {
+            if (!TapThemis.IsInitialized)
+            {
+                return;
+            }
+            THEMIS.CallStatic("SetUseExtendCallback", b);
+        }
     }
 #endif
 }

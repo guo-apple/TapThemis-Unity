@@ -86,14 +86,22 @@ typedef void (*infoReceiverFunc)(uint64_t,uint64_t);
 +(int32_t)getTOD:(char*)buffer max_size:(uint32_t)max_size;
 
 
++(const char*)GetOneidData;
+
+
 // 所有回调函数设置函数
 +(void)SetNativeCallback:(long)themis_state_cb extra_message_cb:(long)extra_message_cb;
+
+
++(void)SetExtraCallbackEx:(long)cb;
+
++(void)SetUseExtendCallback:(bool)b;
 
 +(void)SetExceptionCallback:(long)message_cb;
 
 +(void)SetOOMCallback:(long)message_cb;
 
-
++(void)setStrongKillCallback:(long)message_cb;
 
 
 

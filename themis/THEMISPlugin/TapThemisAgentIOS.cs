@@ -91,6 +91,31 @@ namespace TapTap.Themis
         }
 
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate string getStrongKillMessageCB();
+        [MonoPInvokeCallback(typeof(getStrongKillMessageCB))]
+        static string _getStrongKillMessageCB()
+        {
+            if (_callbackImp != null)
+            {
+                return _callbackImp.getStrongKillMessage();
+            }
+            return null;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate string getExtraMessageCBEx(string message);
+        [MonoPInvokeCallback(typeof(getExtraMessageCBEx))]
+        static string _getExtraMessageCBEx(string message)
+        {
+            if (_callbackImp != null)
+            {
+                return _callbackImp.getExtraMessageEx(message);
+            }
+            return null;
+        }
+
+
         // [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         // public delegate void SetNativeCallback(long themis_state_cb,long extra_message_cb);
         // [MonoPInvokeCallback(typeof(SetNativeCallback))]
@@ -148,6 +173,21 @@ namespace TapTap.Themis
 
         [DllImport("__Internal")]
         private static extern void _lib_set_exception_oom_callback(IntPtr message_cb);
+
+        [DllImport("__Internal")]
+        private static extern void _lib_set_strong_kill_callback(IntPtr message_cb);
+
+        [DllImport("__Internal")]
+        private static extern IntPtr _lib_get_oneid_data();
+
+        [DllImport("__Internal")]
+        private static extern void _lib_set_extra_callback_ex(IntPtr message_cb);
+
+        [DllImport("__Internal")]
+        private static extern void _lib_set_use_extend_callback(bool b);
+
+
+        
 
         
 
@@ -273,16 +313,23 @@ namespace TapTap.Themis
             onThemisStateCB state_handler = new onThemisStateCB(_onThemisStateCB);
             getExtraMessageCB message_handler = new getExtraMessageCB(_getExtraMessageCB);
             getExceptionMessageCB exception_msg_handler = new getExceptionMessageCB(_getExceptionMessageCB);
+            getExtraMessageCBEx ex_message_handler = new getExtraMessageCBEx(_getExtraMessageCBEx);
             getOOMMessageCB oom_handler = new getOOMMessageCB(_getOOMMessageCB);
+            getStrongKillMessageCB strong_kill_handler = new getStrongKillMessageCB(_getStrongKillMessageCB);
 
             IntPtr state_cb = Marshal.GetFunctionPointerForDelegate(state_handler);
             IntPtr message_cb = Marshal.GetFunctionPointerForDelegate(message_handler);
             IntPtr exception_msg_cb = Marshal.GetFunctionPointerForDelegate(exception_msg_handler);
+            IntPtr message_cb_ex = Marshal.GetFunctionPointerForDelegate(ex_message_handler);
             IntPtr oom_msg_cb = Marshal.GetFunctionPointerForDelegate(oom_handler);
+            IntPtr strong_kill_cb = Marshal.GetFunctionPointerForDelegate(strong_kill_handler);
 
             _lib_set_native_callback(state_cb, message_cb);
             _lib_set_exception_callback(exception_msg_cb);
             _lib_set_exception_oom_callback(oom_msg_cb);
+            _lib_set_strong_kill_callback(strong_kill_cb);
+
+            _lib_set_extra_callback_ex(message_cb_ex);
         }
 
         public override void SetEngine(bool isCustom, bool isOpenGl)
@@ -296,6 +343,20 @@ namespace TapTap.Themis
 
             string str_hb = Marshal.PtrToStringAnsi(hb);
             return str_hb;
+        }
+
+        public override string GetOneidData()
+        {
+
+            IntPtr hb = _lib_get_oneid_data();
+
+            string str_hb = Marshal.PtrToStringAnsi(hb);
+            return str_hb;
+        }
+
+        public override void SetUseExtendCallback(bool b)
+        {
+            _lib_set_use_extend_callback(b);
         }
     }
 

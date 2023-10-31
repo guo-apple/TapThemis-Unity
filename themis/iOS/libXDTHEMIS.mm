@@ -68,10 +68,29 @@ void _lib_set_exception_oom_callback(long message_cb){
     [XDGameSDK SetOOMCallback:message_cb];
 }
 
+void _lib_set_strong_kill_callback(long message_cb){
+    [XDGameSDK setStrongKillCallback:message_cb];
+}
+
+
+void _lib_set_extra_callback_ex(long message_cb){
+    [XDGameSDK SetExtraCallbackEx:message_cb];
+}
+
+void _lib_set_use_extend_callback(bool b){
+    [XDGameSDK SetUseExtendCallback:b];
+}
 
 const char * _lib_get_themis_heartbeat(int index, long random){
     return [XDGameSDK getHeartbeat:index random:random];
 }
+
+
+const char * _lib_get_oneid_data(){
+    return [XDGameSDK GetOneidData];
+}
+
+
 
 
 

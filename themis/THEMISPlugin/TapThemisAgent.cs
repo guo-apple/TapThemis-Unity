@@ -27,7 +27,9 @@ namespace TapTap.Themis
 #elif UNITY_ANDROID
                 themisAgent = new TapThemisAgentAndroid();
 #elif UNITY_IPHONE || UNITY_IOS
-                    themisAgent = new TapThemisAgentIOS();
+                themisAgent = new TapThemisAgentIOS();
+#elif UNITY_STANDALONE_OSX
+                themisAgent = new TapThemisAgentMac();
 #endif
             }
             return themisAgent;
@@ -89,6 +91,16 @@ namespace TapTap.Themis
         public virtual string GetHeartbeat(int index,long random)
         {
             return "";
+        }
+
+        public virtual string GetOneidData()
+        {
+            return "";
+        }
+
+        public virtual void SetUseExtendCallback(bool b)
+        {
+
         }
     }
 }

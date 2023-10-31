@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 
 
-typedef const char* (*get_message_callback)(void);
-
 
 #ifdef __cplusplus  //如果是C++语言
 #define PASSPORT_EXTERN         extern "C" __attribute__((visibility ("default")))
